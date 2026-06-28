@@ -1,6 +1,8 @@
 GOHOSTOS:=$(shell go env GOHOSTOS)
 GOPATH:=$(shell go env GOPATH)
 VERSION=$(shell git describe --tags --always)
+API_PROTO_FILES=$(shell find api -name '*.proto')
+KRATOS_THIRD_PARTY=$(shell go list -m -f '{{.Dir}}' github.com/go-kratos/kratos/v3)/third_party
 
 .PHONY: init
 # init env
@@ -17,6 +19,16 @@ config:
 # generate api proto
 api:
 	buf generate --template buf.gen.yaml
+
+.PHONY: validate
+# generate validate proto
+validate:
+	protoc --proto_path=. \
+           --proto_path=./third_party \
+           --proto_path=$(KRATOS_THIRD_PARTY) \
+           --go_out=paths=source_relative:. \
+           --validate_out=paths=source_relative,lang=go:. \
+           $(API_PROTO_FILES)
 
 .PHONY: build
 # build

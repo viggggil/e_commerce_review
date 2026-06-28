@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"review_service/internal/conf"
+	"review_service/pkg/snowflake"
 
 	"github.com/go-kratos/kratos/contrib/otel/v3/tracing"
 	"github.com/go-kratos/kratos/v3"
@@ -84,6 +85,10 @@ func main() {
 	}
 	defer cleanup()
 
+	if err := snowflake.Init(bc.Snowflake.StartTime,
+		bc.Snowflake.MachineId); err != nil {
+		panic(err)
+	}
 	// start and wait for stop signal
 	if err := app.Run(); err != nil {
 		panic(err)
