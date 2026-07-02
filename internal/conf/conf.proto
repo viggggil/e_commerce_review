@@ -9,6 +9,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   SnowFlake snowflake = 3;
+  Registry registry = 4;
 }
 
 message Server {
@@ -45,3 +46,12 @@ message SnowFlake {
     string start_time=1;
     int64 machine_id=2;
 }
+
+message Registry{
+  message Consul{
+    string addr=1;
+    string scheme=2;
+  }
+  Consul consul=1;
+}
+
